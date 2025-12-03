@@ -32,7 +32,7 @@ def part_2(ids: list[list[int]]):
             for p in range(1, (len(i_str) // 2) + 1):
                 sub_str = i_str[:p]
 
-                if i_str.replace(sub_str, '') == '':
+                if i_str.replace(sub_str, "") == "":
                     sum += i
                     break
 

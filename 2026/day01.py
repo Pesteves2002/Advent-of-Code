@@ -20,7 +20,7 @@ def part_1(start: int, window_size: int, actions: list[str]):
     return count
 
 
-def part_2(start:int , window_size: int, actions: list[str]):
+def part_2(start: int, window_size: int, actions: list[str]):
     count = 0
     pointer = start
     for action in actions:
@@ -44,8 +44,8 @@ def part_2(start:int , window_size: int, actions: list[str]):
 
     return count
 
-def main():
 
+def main():
     filepath = sys.argv[1]
 
     f = open(filepath)
@@ -57,6 +57,7 @@ def main():
 
     print("Part_1:", part_1(start, window_size, actions))
     print("Part_2:", part_2(start, window_size, actions))
+
 
 if __name__ == "__main__":
     main()
