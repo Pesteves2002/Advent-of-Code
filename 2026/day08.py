@@ -7,51 +7,30 @@ def euclidean_distance(p: tuple[int, ...], q: tuple[int, ...]) -> float:
 
 
 def part_1(junctions: list[tuple[int, ...]], num_connections: int):
-    dist_matrix: list[list[float]] = []
+    dist_vector: list[tuple[int, int, float]] = []
     for y, q in enumerate(junctions):
-        row: list[float] = []
-        for p in junctions[y:]:
+        for x, p in enumerate(junctions[(y + 1) :], start=y + 1):
             dist = euclidean_distance(p, q)
-            if dist == 0:
-                dist = sys.maxsize
-            row.append(dist)
+            dist_vector.append((x, y, dist))
 
-        dist_matrix.append(row)
+    dist_vector.sort(key=lambda e: e[2])
 
     circuits = [[j] for j in range(len(junctions))]
 
-    num_conn = 0
+    for _ in range(num_connections):
+        t = dist_vector[0]
 
-    while num_conn < num_connections:
-        min_dist = sys.maxsize
-        coord_pair = (0, 0)
+        x = t[0]
+        y = t[1]
 
-        for y, q in enumerate(dist_matrix):
-            for x, dist in enumerate(q):
-                if dist < min_dist:
-                    min_dist = dist
-                    coord_pair = (x, y)
+        orig = next(c for c in circuits if x in c)
+        dest = next(c for c in circuits if y in c)
 
-        a = coord_pair[1]
-        b = a + coord_pair[0]
-        # print(a, b)
-
-        orig = next(c for c in circuits if a in c)
-        dest = next(c for c in circuits if b in c)
-
-        i = min(a, b)
-        j = max(a, b)
-
-        r = i
-        c = j - i
-
-        dist_matrix[r][c] = sys.maxsize
+        _ = dist_vector.pop(0)
 
         if orig != dest:
             dest.extend(orig)
             circuits.remove(orig)
-
-        num_conn += 1
 
     circuits.sort(key=lambda e: len(e), reverse=True)
 
@@ -63,51 +42,35 @@ def part_1(junctions: list[tuple[int, ...]], num_connections: int):
 
 
 def part_2(junctions: list[tuple[int, ...]]):
-    dist_matrix: list[list[float]] = []
-    for y, q in enumerate(junctions):
-        row: list[float] = []
-        for p in junctions[y:]:
-            dist = euclidean_distance(p, q)
-            if dist == 0:
-                dist = sys.maxsize
-            row.append(dist)
+    dist_vector: list[tuple[int, int, float]] = []
 
-        dist_matrix.append(row)
+    for y, q in enumerate(junctions):
+        for x, p in enumerate(junctions[(y + 1) :], start=y + 1):
+            dist = euclidean_distance(p, q)
+            dist_vector.append((x, y, dist))
+
+    dist_vector.sort(key=lambda e: e[2])
 
     circuits = [[j] for j in range(len(junctions))]
 
-    last_connect: tuple[tuple[int, ...], ...] = ((0,0,0),(0,0,0))
+    last_connect: tuple[int, int, float] = (0, 0, 0)
     while len(circuits) > 1:
-        min_dist = sys.maxsize
-        coord_pair = (0, 0)
+        t = dist_vector[0]
 
-        for y, q in enumerate(dist_matrix):
-            for x, dist in enumerate(q):
-                if dist < min_dist:
-                    min_dist = dist
-                    coord_pair = (x, y)
+        x = t[0]
+        y = t[1]
 
-        a = coord_pair[1]
-        b = a + coord_pair[0]
-        # print(a, b)
+        orig = next(c for c in circuits if x in c)
+        dest = next(c for c in circuits if y in c)
 
-        orig = next(c for c in circuits if a in c)
-        dest = next(c for c in circuits if b in c)
-
-        i = min(a, b)
-        j = max(a, b)
-
-        r = i
-        c = j - i
-
-        dist_matrix[r][c] = sys.maxsize
+        _ = dist_vector.pop(0)
 
         if orig != dest:
             dest.extend(orig)
             circuits.remove(orig)
-            last_connect = (junctions[r], junctions[r + c])
+            last_connect = t
 
-    return last_connect[0][0] * last_connect[1][0]
+    return junctions[last_connect[0]][0] * junctions[last_connect[1]][0]
 
 
 def main():
