@@ -29,6 +29,7 @@
                 with p; [
                   shapely
                   pandas
+                  pulp
                 ])
             )
 
