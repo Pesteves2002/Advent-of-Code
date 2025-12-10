@@ -27,6 +27,7 @@
             (
               python3.withPackages (p:
                 with p; [
+                  shapely
                   pandas
                 ])
             )
